@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime
+from typing import List
 
 from .database import Base, engine
 from .dependencies import get_db
@@ -60,3 +61,37 @@ def create_customer_appointment(customer_id: int, specialist_id: int, time: date
 @app.get("/me", response_model=schemas.User)
 def read_me(current: models.User = Depends(get_current_user)):
     return current
+
+
+@app.get("/admin/specialists/appointments", response_model=List[schemas.Appointment])
+def read_all_appointments(db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type != models.UserType.admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_all_specialist_appointments(db)
+
+
+@app.get("/specialists/{specialist_id}/appointments", response_model=List[schemas.Appointment])
+def read_specialist_appointments(specialist_id: int, db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type not in [models.UserType.specialist, models.UserType.admin]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    if current.type == models.UserType.specialist and current.specialist.id != specialist_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_specialist_appointments(db, specialist_id)
+
+
+@app.get("/customers/{customer_id}/appointments", response_model=List[schemas.Appointment])
+def read_customer_appointments(customer_id: int, db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type not in [models.UserType.customer, models.UserType.admin]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    if current.type == models.UserType.customer and current.customer.id != customer_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_customer_appointments(db, customer_id)
+
+
+@app.get("/customers/{customer_id}/weekly_plans", response_model=List[schemas.WeeklyPlan])
+def read_customer_plans(customer_id: int, db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type not in [models.UserType.customer, models.UserType.admin]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    if current.type == models.UserType.customer and current.customer.id != customer_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_customer_weekly_plans(db, customer_id)

@@ -60,3 +60,31 @@ def get_user_by_username(db: Session, username: str):
 
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
+
+
+def get_specialist_appointments(db: Session, specialist_id: int) -> List[models.Appointment]:
+    return (
+        db.query(models.Appointment)
+        .filter(models.Appointment.specialist_id == specialist_id)
+        .all()
+    )
+
+
+def get_customer_appointments(db: Session, customer_id: int) -> List[models.Appointment]:
+    return (
+        db.query(models.Appointment)
+        .filter(models.Appointment.customer_id == customer_id)
+        .all()
+    )
+
+
+def get_all_specialist_appointments(db: Session) -> List[models.Appointment]:
+    return db.query(models.Appointment).all()
+
+
+def get_customer_weekly_plans(db: Session, customer_id: int) -> List[models.WeeklyPlan]:
+    return (
+        db.query(models.WeeklyPlan)
+        .filter(models.WeeklyPlan.customer_id == customer_id)
+        .all()
+    )
