@@ -14,12 +14,14 @@ function SpecialistDashboard({ user, onLogout }) {
   };
 
   return (
-    <div>
-      <button onClick={onLogout}>Logout</button>
-      <h2>Specialist Dashboard</h2>
-      <section>
-        <h3>Appointments</h3>
-        <ul>
+    <div className="min-h-screen bg-secondary p-6">
+      <div className="flex justify-end mb-4">
+        <button className="text-primary underline" onClick={onLogout}>Logout</button>
+      </div>
+      <h2 className="text-2xl font-bold text-primary mb-4">Specialist Dashboard</h2>
+      <section className="bg-white rounded shadow p-4">
+        <h3 className="font-semibold mb-2">Appointments</h3>
+        <ul className="space-y-1">
           {appointments.map((a) => (
             <li key={a.id}>{new Date(a.time).toLocaleString()}</li>
           ))}

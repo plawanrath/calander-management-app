@@ -24,31 +24,46 @@ function CustomerDashboard({ user, onLogout }) {
   };
 
   return (
-    <div>
-      <button onClick={onLogout}>Logout</button>
-      <h2>Customer Dashboard</h2>
-      <section>
-        <h3>Weekly Plans</h3>
-        <ul>
+    <div className="min-h-screen bg-secondary p-6">
+      <div className="flex justify-end mb-4">
+        <button className="text-primary underline" onClick={onLogout}>Logout</button>
+      </div>
+      <h2 className="text-2xl font-bold text-primary mb-4">Customer Dashboard</h2>
+
+      <section className="bg-white rounded shadow p-4 mb-6">
+        <h3 className="font-semibold mb-2">Weekly Plans</h3>
+        <ul className="list-disc pl-5 space-y-1">
           {plans.map((p) => (
             <li key={p.id}>{p.description}</li>
           ))}
         </ul>
       </section>
-      <section>
-        <h3>Appointments</h3>
-        <ul>
+
+      <section className="bg-white rounded shadow p-4 mb-6">
+        <h3 className="font-semibold mb-2">Appointments</h3>
+        <ul className="space-y-1">
           {appointments.map((a) => (
             <li key={a.id}>{new Date(a.time).toLocaleString()}</li>
           ))}
         </ul>
       </section>
-      <section>
-        <h3>Create Appointment</h3>
-        <form onSubmit={handleCreate}>
-          <input value={form.specialistId} onChange={(e) => setForm({ ...form, specialistId: e.target.value })} placeholder="Specialist ID" />
-          <input value={form.time} onChange={(e) => setForm({ ...form, time: e.target.value })} placeholder="YYYY-MM-DDTHH:MM" />
-          <button type="submit">Create</button>
+
+      <section className="bg-white rounded shadow p-4">
+        <h3 className="font-semibold mb-2">Create Appointment</h3>
+        <form onSubmit={handleCreate} className="space-y-2">
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={form.specialistId}
+            onChange={(e) => setForm({ ...form, specialistId: e.target.value })}
+            placeholder="Specialist ID"
+          />
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={form.time}
+            onChange={(e) => setForm({ ...form, time: e.target.value })}
+            placeholder="YYYY-MM-DDTHH:MM"
+          />
+          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Create</button>
         </form>
       </section>
     </div>

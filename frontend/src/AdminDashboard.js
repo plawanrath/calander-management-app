@@ -32,41 +32,81 @@ function AdminDashboard({ onLogout }) {
   };
 
   return (
-    <div>
-      <button onClick={onLogout}>Logout</button>
-      <h2>Admin Dashboard</h2>
-      <section>
-        <h3>Create User</h3>
-        <form onSubmit={handleCreateUser}>
-          <input value={userForm.username} onChange={(e) => setUserForm({ ...userForm, username: e.target.value })} placeholder="Username" />
-          <input value={userForm.password} onChange={(e) => setUserForm({ ...userForm, password: e.target.value })} placeholder="Password" />
-          <select value={userForm.type} onChange={(e) => setUserForm({ ...userForm, type: e.target.value })}>
+    <div className="min-h-screen bg-secondary p-6">
+      <div className="flex justify-end mb-4">
+        <button className="text-primary underline" onClick={onLogout}>Logout</button>
+      </div>
+      <h2 className="text-2xl font-bold text-primary mb-4">Admin Dashboard</h2>
+
+      <section className="bg-white rounded shadow p-4 mb-6">
+        <h3 className="font-semibold mb-2">Create User</h3>
+        <form onSubmit={handleCreateUser} className="space-y-2">
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={userForm.username}
+            onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
+            placeholder="Username"
+          />
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={userForm.password}
+            onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+            placeholder="Password"
+          />
+          <select
+            className="w-full border border-gray-300 rounded p-2"
+            value={userForm.type}
+            onChange={(e) => setUserForm({ ...userForm, type: e.target.value })}
+          >
             <option value="customer">Customer</option>
             <option value="specialist">Specialist</option>
             <option value="admin">Admin</option>
           </select>
-          <button type="submit">Create</button>
+          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Create</button>
         </form>
       </section>
-      <section>
-        <h3>Assign Specialist</h3>
-        <form onSubmit={handleAssign}>
-          <input value={assignForm.customerId} onChange={(e) => setAssignForm({ ...assignForm, customerId: e.target.value })} placeholder="Customer ID" />
-          <input value={assignForm.specialistId} onChange={(e) => setAssignForm({ ...assignForm, specialistId: e.target.value })} placeholder="Specialist ID" />
-          <button type="submit">Assign</button>
+
+      <section className="bg-white rounded shadow p-4 mb-6">
+        <h3 className="font-semibold mb-2">Assign Specialist</h3>
+        <form onSubmit={handleAssign} className="space-y-2">
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={assignForm.customerId}
+            onChange={(e) => setAssignForm({ ...assignForm, customerId: e.target.value })}
+            placeholder="Customer ID"
+          />
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={assignForm.specialistId}
+            onChange={(e) => setAssignForm({ ...assignForm, specialistId: e.target.value })}
+            placeholder="Specialist ID"
+          />
+          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Assign</button>
         </form>
       </section>
-      <section>
-        <h3>Create Weekly Plan</h3>
-        <form onSubmit={handlePlan}>
-          <input value={planForm.customerId} onChange={(e) => setPlanForm({ ...planForm, customerId: e.target.value })} placeholder="Customer ID" />
-          <input value={planForm.description} onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })} placeholder="Description" />
-          <button type="submit">Create Plan</button>
+
+      <section className="bg-white rounded shadow p-4 mb-6">
+        <h3 className="font-semibold mb-2">Create Weekly Plan</h3>
+        <form onSubmit={handlePlan} className="space-y-2">
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={planForm.customerId}
+            onChange={(e) => setPlanForm({ ...planForm, customerId: e.target.value })}
+            placeholder="Customer ID"
+          />
+          <input
+            className="w-full border border-gray-300 rounded p-2"
+            value={planForm.description}
+            onChange={(e) => setPlanForm({ ...planForm, description: e.target.value })}
+            placeholder="Description"
+          />
+          <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Create Plan</button>
         </form>
       </section>
-      <section>
-        <h3>All Specialist Appointments</h3>
-        <ul>
+
+      <section className="bg-white rounded shadow p-4">
+        <h3 className="font-semibold mb-2">All Specialist Appointments</h3>
+        <ul className="space-y-1">
           {appointments.map((a) => (
             <li key={a.id}>{a.specialist_id} - {new Date(a.time).toLocaleString()}</li>
           ))}
