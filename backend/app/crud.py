@@ -33,9 +33,23 @@ def create_user(db: Session, user: schemas.UserCreate) -> models.User:
 
 
 def assign_specialist(db: Session, customer_id: int, specialist_id: int):
-    link = models.SpecialistCustomer(customer_id=customer_id, specialist_id=specialist_id)
+    existing = (
+        db.query(models.SpecialistCustomer)
+        .filter(
+            models.SpecialistCustomer.customer_id == customer_id,
+            models.SpecialistCustomer.specialist_id == specialist_id,
+        )
+        .first()
+    )
+    if existing:
+        return existing
+
+    link = models.SpecialistCustomer(
+        customer_id=customer_id, specialist_id=specialist_id
+    )
     db.add(link)
     db.commit()
+    db.refresh(link)
     return link
 
 
