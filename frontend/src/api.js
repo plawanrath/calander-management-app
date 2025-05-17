@@ -30,6 +30,16 @@ export async function createUser(data) {
   return response.data;
 }
 
+export async function getAllCustomers() {
+  const response = await api.get('/admin/customers');
+  return response.data;
+}
+
+export async function getAllSpecialists() {
+  const response = await api.get('/admin/specialists');
+  return response.data;
+}
+
 export async function assignSpecialist(customerId, specialistId) {
   const url = `/admin/customers/${customerId}/specialists/${specialistId}`;
   const response = await api.post(url);

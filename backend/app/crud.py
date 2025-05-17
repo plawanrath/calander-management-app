@@ -95,3 +95,11 @@ def get_customer_weekly_plans(db: Session, customer_id: int) -> List[models.Week
         .filter(models.WeeklyPlan.customer_id == customer_id)
         .all()
     )
+
+
+def get_all_customers(db: Session) -> List[models.Customer]:
+    return db.query(models.Customer).all()
+
+
+def get_all_specialists(db: Session) -> List[models.Specialist]:
+    return db.query(models.Specialist).all()
