@@ -65,6 +65,11 @@ def create_plan(customer_id: int, description: str, db: Session = Depends(get_db
 def create_customer_appointment(customer_id: int, specialist_id: int, time: datetime, db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
     if current.type != models.UserType.customer or current.customer.id != customer_id:
         raise HTTPException(status_code=403, detail="Not authorized")
+    if time < datetime.utcnow():
+        raise HTTPException(status_code=400, detail="Cannot book appointment in the past")
+    specialists = crud.get_customer_specialists(db, customer_id)
+    if not any(s.id == specialist_id for s in specialists):
+        raise HTTPException(status_code=400, detail="Specialist not assigned to customer")
     return crud.create_appointment(db, customer_id, specialist_id, time)
 
 @app.get("/me", response_model=schemas.User)
@@ -95,6 +100,15 @@ def read_customer_appointments(customer_id: int, db: Session = Depends(get_db), 
     if current.type == models.UserType.customer and current.customer.id != customer_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     return crud.get_customer_appointments(db, customer_id)
+
+
+@app.get("/customers/{customer_id}/specialists", response_model=List[schemas.Specialist])
+def read_customer_specialists(customer_id: int, db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type not in [models.UserType.customer, models.UserType.admin]:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    if current.type == models.UserType.customer and current.customer.id != customer_id:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_customer_specialists(db, customer_id)
 
 
 @app.get("/customers/{customer_id}/weekly_plans", response_model=List[schemas.WeeklyPlan])

@@ -103,3 +103,12 @@ def get_all_customers(db: Session) -> List[models.Customer]:
 
 def get_all_specialists(db: Session) -> List[models.Specialist]:
     return db.query(models.Specialist).all()
+
+
+def get_customer_specialists(db: Session, customer_id: int) -> List[models.Specialist]:
+    return (
+        db.query(models.Specialist)
+        .join(models.SpecialistCustomer, models.Specialist.id == models.SpecialistCustomer.specialist_id)
+        .filter(models.SpecialistCustomer.customer_id == customer_id)
+        .all()
+    )

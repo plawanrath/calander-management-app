@@ -63,6 +63,12 @@ export async function getCustomerAppointments(customerId) {
   return response.data;
 }
 
+export async function getCustomerSpecialists(customerId) {
+  const url = `/customers/${customerId}/specialists`;
+  const response = await api.get(url);
+  return response.data;
+}
+
 export async function getSpecialistAppointments(specialistId) {
   const url = `/specialists/${specialistId}/appointments`;
   const response = await api.get(url);
