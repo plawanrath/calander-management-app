@@ -3,7 +3,7 @@ import LoginPage from './LoginPage';
 import AdminDashboard from './AdminDashboard';
 import CustomerDashboard from './CustomerDashboard';
 import SpecialistDashboard from './SpecialistDashboard';
-import { getMe, setToken } from './api';
+import { getMe, setToken, clearToken } from './api';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,20 +29,26 @@ function App() {
     await fetchUser();
   };
 
+  const handleLogout = () => {
+    clearToken();
+    localStorage.removeItem('token');
+    setUser(null);
+  };
+
   if (!user) {
     return <LoginPage onLogin={handleLogin} />;
   }
 
   if (user.type === 'admin') {
-    return <AdminDashboard />;
+    return <AdminDashboard onLogout={handleLogout} />;
   }
 
   if (user.type === 'customer') {
-    return <CustomerDashboard user={user} />;
+    return <CustomerDashboard user={user} onLogout={handleLogout} />;
   }
 
   if (user.type === 'specialist') {
-    return <SpecialistDashboard user={user} />;
+    return <SpecialistDashboard user={user} onLogout={handleLogout} />;
   }
 
   return <div>Unknown user type</div>;

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getCustomerAppointments, createAppointment, getCustomerPlans } from './api';
 
-function CustomerDashboard({ user }) {
+function CustomerDashboard({ user, onLogout }) {
   const [appointments, setAppointments] = useState([]);
   const [plans, setPlans] = useState([]);
   const [form, setForm] = useState({ specialistId: '', time: '' });
@@ -25,6 +25,7 @@ function CustomerDashboard({ user }) {
 
   return (
     <div>
+      <button onClick={onLogout}>Logout</button>
       <h2>Customer Dashboard</h2>
       <section>
         <h3>Weekly Plans</h3>
