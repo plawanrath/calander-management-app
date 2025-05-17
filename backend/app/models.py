@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, Enum, ForeignKey, DateTime, Boolean, UniqueConstraint
 from sqlalchemy.orm import relationship
 from .database import Base
 import enum
@@ -40,6 +40,9 @@ class SpecialistCustomer(Base):
     id = Column(Integer, primary_key=True, index=True)
     customer_id = Column(Integer, ForeignKey("customers.id"))
     specialist_id = Column(Integer, ForeignKey("specialists.id"))
+    __table_args__ = (
+        UniqueConstraint("customer_id", "specialist_id"),
+    )
 
 class Appointment(Base):
     __tablename__ = "appointments"
