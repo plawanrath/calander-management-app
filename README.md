@@ -11,3 +11,43 @@ docker-compose up --build
 ```
 
 The backend will be available at `http://localhost:8000` and the frontend at `http://localhost:3000`.
+
+## User Setup
+
+No accounts are created automatically. You must insert an initial user manually before logging in. First generate a bcrypt hash using the backend container:
+
+```bash
+docker compose exec backend python - <<'EOF'
+from passlib.context import CryptContext
+pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
+print(pwd.hash("YOUR_ADMIN_PASSWORD"))
+EOF
+```
+
+Then insert the admin record into Postgres (note the escaped `$` characters):
+
+```bash
+docker compose exec db psql -U postgres -d postgres -c \
+  "INSERT INTO users (username, hashed_password, type) VALUES ('admin', '\$2b\$...YOUR_HASH...', 'admin');"
+```
+
+After that you can request a token:
+
+```bash
+curl -X POST -d "username=admin&password=YOUR_ADMIN_PASSWORD" http://localhost:8000/token
+```
+
+## Troubleshooting
+
+If login fails with `hash could not be identified` errors, verify the password against the stored hash:
+
+```bash
+docker compose exec backend python - <<'EOF'
+from passlib.context import CryptContext
+pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
+HASH = "<HASH_FROM_DB>"
+print(pwd.verify("YOUR_PASSWORD", HASH))
+EOF
+```
+
+Replace `YOUR_PASSWORD` with the password you expect and `HASH_FROM_DB` with the value from `SELECT hashed_password FROM users WHERE username='admin';`. A result of `True` confirms the password matches the stored hash.
