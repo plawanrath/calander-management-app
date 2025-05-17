@@ -4,6 +4,7 @@ from . import schemas
 from datetime import datetime
 from typing import List
 from passlib.context import CryptContext
+from passlib.exc import UnknownHashError
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -59,7 +60,13 @@ def get_user_by_username(db: Session, username: str):
 
 
 def verify_password(plain: str, hashed: str) -> bool:
-    return pwd_context.verify(plain, hashed)
+    """Return True if ``plain`` matches the bcrypt ``hashed`` value."""
+    if not hashed:
+        return False
+    try:
+        return pwd_context.verify(plain, hashed.strip())
+    except (ValueError, UnknownHashError):
+        return False
 
 
 def get_specialist_appointments(db: Session, specialist_id: int) -> List[models.Appointment]:
