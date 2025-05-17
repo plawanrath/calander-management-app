@@ -72,7 +72,7 @@ def create_customer_appointment(customer_id: int, specialist_id: int, time: date
         raise HTTPException(status_code=400, detail="Specialist not assigned to customer")
     return crud.create_appointment(db, customer_id, specialist_id, time)
 
-@app.get("/me", response_model=schemas.User)
+@app.get("/me", response_model=schemas.UserProfile)
 def read_me(current: models.User = Depends(get_current_user)):
     return current
 

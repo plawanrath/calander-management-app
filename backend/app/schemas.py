@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
@@ -15,6 +17,23 @@ class User(UserBase):
 
     class Config:
         orm_mode = True
+
+class CustomerInfo(BaseModel):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+class SpecialistInfo(BaseModel):
+    id: int
+    working_hours: str
+
+    class Config:
+        orm_mode = True
+
+class UserProfile(User):
+    customer: Optional[CustomerInfo] = None
+    specialist: Optional[SpecialistInfo] = None
 
 class Customer(BaseModel):
     id: int
