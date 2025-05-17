@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createUser, assignSpecialist, createWeeklyPlan, getAllAppointments } from './api';
 
-function AdminDashboard() {
+function AdminDashboard({ onLogout }) {
   const [userForm, setUserForm] = useState({ username: '', password: '', type: 'customer' });
   const [assignForm, setAssignForm] = useState({ customerId: '', specialistId: '' });
   const [planForm, setPlanForm] = useState({ customerId: '', description: '' });
@@ -33,6 +33,7 @@ function AdminDashboard() {
 
   return (
     <div>
+      <button onClick={onLogout}>Logout</button>
       <h2>Admin Dashboard</h2>
       <section>
         <h3>Create User</h3>

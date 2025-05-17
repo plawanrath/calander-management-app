@@ -8,6 +8,10 @@ export function setToken(token) {
   api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
+export function clearToken() {
+  delete api.defaults.headers.common['Authorization'];
+}
+
 export async function login(username, password) {
   const params = new URLSearchParams();
   params.append('username', username);

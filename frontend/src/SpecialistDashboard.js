@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getSpecialistAppointments } from './api';
 
-function SpecialistDashboard({ user }) {
+function SpecialistDashboard({ user, onLogout }) {
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
@@ -15,6 +15,7 @@ function SpecialistDashboard({ user }) {
 
   return (
     <div>
+      <button onClick={onLogout}>Logout</button>
       <h2>Specialist Dashboard</h2>
       <section>
         <h3>Appointments</h3>
