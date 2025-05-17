@@ -1,19 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { createUser, assignSpecialist, createWeeklyPlan, getAllAppointments } from './api';
+import { createUser, assignSpecialist, createWeeklyPlan, getAllAppointments, getAllCustomers, getAllSpecialists } from './api';
 
 function AdminDashboard({ onLogout }) {
   const [userForm, setUserForm] = useState({ username: '', password: '', type: 'customer' });
-  const [assignForm, setAssignForm] = useState({ customerId: '', specialistId: '' });
+  const [assignForm, setAssignForm] = useState({ customerId: '', specialistIds: [] });
   const [planForm, setPlanForm] = useState({ customerId: '', description: '' });
   const [appointments, setAppointments] = useState([]);
+  const [customers, setCustomers] = useState([]);
+  const [specialists, setSpecialists] = useState([]);
 
   useEffect(() => {
-    loadAppointments();
+    loadData();
   }, []);
 
-  const loadAppointments = async () => {
+  const loadData = async () => {
     const data = await getAllAppointments();
     setAppointments(data);
+    const custs = await getAllCustomers();
+    setCustomers(custs);
+    const specs = await getAllSpecialists();
+    setSpecialists(specs);
   };
 
   const handleCreateUser = async (e) => {
@@ -23,7 +29,9 @@ function AdminDashboard({ onLogout }) {
 
   const handleAssign = async (e) => {
     e.preventDefault();
-    await assignSpecialist(assignForm.customerId, assignForm.specialistId);
+    for (const id of assignForm.specialistIds) {
+      await assignSpecialist(assignForm.customerId, id);
+    }
   };
 
   const handlePlan = async (e) => {
@@ -69,18 +77,29 @@ function AdminDashboard({ onLogout }) {
       <section className="bg-white rounded shadow p-4 mb-6">
         <h3 className="font-semibold mb-2">Assign Specialist</h3>
         <form onSubmit={handleAssign} className="space-y-2">
-          <input
+          <select
             className="w-full border border-gray-300 rounded p-2"
             value={assignForm.customerId}
             onChange={(e) => setAssignForm({ ...assignForm, customerId: e.target.value })}
-            placeholder="Customer ID"
-          />
-          <input
-            className="w-full border border-gray-300 rounded p-2"
-            value={assignForm.specialistId}
-            onChange={(e) => setAssignForm({ ...assignForm, specialistId: e.target.value })}
-            placeholder="Specialist ID"
-          />
+          >
+            <option value="">Select Customer</option>
+            {customers.map((c) => (
+              <option key={c.id} value={c.id}>{c.user.username}</option>
+            ))}
+          </select>
+          <select
+            multiple
+            className="w-full border border-gray-300 rounded p-2 h-32"
+            value={assignForm.specialistIds}
+            onChange={(e) => {
+              const selected = Array.from(e.target.selectedOptions, (o) => o.value);
+              setAssignForm({ ...assignForm, specialistIds: selected });
+            }}
+          >
+            {specialists.map((s) => (
+              <option key={s.id} value={s.id}>{s.user.username}</option>
+            ))}
+          </select>
           <button className="bg-primary text-white px-4 py-2 rounded" type="submit">Assign</button>
         </form>
       </section>

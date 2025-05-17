@@ -104,3 +104,17 @@ def read_customer_plans(customer_id: int, db: Session = Depends(get_db), current
     if current.type == models.UserType.customer and current.customer.id != customer_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     return crud.get_customer_weekly_plans(db, customer_id)
+
+
+@app.get("/admin/customers", response_model=List[schemas.Customer])
+def read_customers(db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type != models.UserType.admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_all_customers(db)
+
+
+@app.get("/admin/specialists", response_model=List[schemas.Specialist])
+def read_specialists(db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+    if current.type != models.UserType.admin:
+        raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_all_specialists(db)
