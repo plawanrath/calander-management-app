@@ -25,6 +25,7 @@ class Customer(Base):
 
     user = relationship("User", back_populates="customer")
     weekly_plans = relationship("WeeklyPlan", back_populates="customer")
+    appointments = relationship("Appointment", back_populates="customer")
 
 class Specialist(Base):
     __tablename__ = "specialists"
@@ -50,8 +51,11 @@ class Appointment(Base):
     specialist_id = Column(Integer, ForeignKey("specialists.id"))
     customer_id = Column(Integer, ForeignKey("customers.id"))
     time = Column(DateTime)
+    end_time = Column(DateTime)
+    title = Column(String)
 
     specialist = relationship("Specialist", back_populates="appointments")
+    customer = relationship("Customer", back_populates="appointments")
 
 class WeeklyPlan(Base):
     __tablename__ = "weekly_plans"

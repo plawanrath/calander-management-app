@@ -53,6 +53,11 @@ class Specialist(BaseModel):
 class Appointment(BaseModel):
     id: int
     time: datetime
+    end_time: datetime
+    title: Optional[str] = None
+    customer_id: int
+    specialist_id: int
+    customer: Optional[Customer] = None
 
     class Config:
         orm_mode = True
