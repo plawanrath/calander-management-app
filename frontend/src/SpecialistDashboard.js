@@ -23,7 +23,10 @@ function SpecialistDashboard({ user, onLogout }) {
         <h3 className="font-semibold mb-2">Appointments</h3>
         <ul className="space-y-1">
           {appointments.map((a) => (
-            <li key={a.id}>{new Date(a.time).toLocaleString()}</li>
+            <li key={a.id}>
+              {new Date(a.time).toLocaleString()} -{' '}
+              {a.customer?.user.username} ({a.title})
+            </li>
           ))}
         </ul>
       </section>

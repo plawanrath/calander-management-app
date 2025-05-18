@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from . import models
 from . import schemas
 from datetime import datetime
@@ -61,8 +61,14 @@ def create_weekly_plan(db: Session, customer_id: int, description: str):
     return plan
 
 
-def create_appointment(db: Session, customer_id: int, specialist_id: int, time: datetime):
-    appt = models.Appointment(customer_id=customer_id, specialist_id=specialist_id, time=time)
+def create_appointment(db: Session, customer_id: int, specialist_id: int, time: datetime, end_time: datetime, title: str):
+    appt = models.Appointment(
+        customer_id=customer_id,
+        specialist_id=specialist_id,
+        time=time,
+        end_time=end_time,
+        title=title,
+    )
     db.add(appt)
     db.commit()
     db.refresh(appt)
@@ -86,6 +92,7 @@ def verify_password(plain: str, hashed: str) -> bool:
 def get_specialist_appointments(db: Session, specialist_id: int) -> List[models.Appointment]:
     return (
         db.query(models.Appointment)
+        .options(joinedload(models.Appointment.customer).joinedload(models.Customer.user))
         .filter(models.Appointment.specialist_id == specialist_id)
         .all()
     )
@@ -94,6 +101,7 @@ def get_specialist_appointments(db: Session, specialist_id: int) -> List[models.
 def get_customer_appointments(db: Session, customer_id: int) -> List[models.Appointment]:
     return (
         db.query(models.Appointment)
+        .options(joinedload(models.Appointment.specialist).joinedload(models.Specialist.user))
         .filter(models.Appointment.customer_id == customer_id)
         .all()
     )
