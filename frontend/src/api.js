@@ -75,9 +75,11 @@ export async function getSpecialistAppointments(specialistId) {
   return response.data;
 }
 
-export async function createAppointment(customerId, specialistId, time) {
+export async function createAppointment(customerId, specialistId, time, endTime, title) {
   const url = `/customers/${customerId}/appointments`;
-  const response = await api.post(url, null, { params: { specialist_id: specialistId, time } });
+  const response = await api.post(url, null, {
+    params: { specialist_id: specialistId, time, end_time: endTime, title },
+  });
   return response.data;
 }
 

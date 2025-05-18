@@ -62,7 +62,15 @@ def create_plan(customer_id: int, description: str, db: Session = Depends(get_db
     return crud.create_weekly_plan(db, customer_id, description)
 
 @app.post("/customers/{customer_id}/appointments")
-def create_customer_appointment(customer_id: int, specialist_id: int, time: datetime, db: Session = Depends(get_db), current: models.User = Depends(get_current_user)):
+def create_customer_appointment(
+    customer_id: int,
+    specialist_id: int,
+    time: datetime,
+    end_time: datetime,
+    title: str,
+    db: Session = Depends(get_db),
+    current: models.User = Depends(get_current_user),
+):
     if current.type != models.UserType.customer or current.customer.id != customer_id:
         raise HTTPException(status_code=403, detail="Not authorized")
     if time < datetime.utcnow():
@@ -70,7 +78,9 @@ def create_customer_appointment(customer_id: int, specialist_id: int, time: date
     specialists = crud.get_customer_specialists(db, customer_id)
     if not any(s.id == specialist_id for s in specialists):
         raise HTTPException(status_code=400, detail="Specialist not assigned to customer")
-    return crud.create_appointment(db, customer_id, specialist_id, time)
+    if end_time <= time:
+        raise HTTPException(status_code=400, detail="End time must be after start time")
+    return crud.create_appointment(db, customer_id, specialist_id, time, end_time, title)
 
 @app.get("/me", response_model=schemas.UserProfile)
 def read_me(current: models.User = Depends(get_current_user)):
