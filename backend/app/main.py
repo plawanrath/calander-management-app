@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+from sqlalchemy import text
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime
 from typing import List
@@ -10,6 +11,23 @@ from .dependencies import get_db
 from . import crud, models, schemas
 
 Base.metadata.create_all(bind=engine)
+
+# Add new columns when upgrading from previous versions
+def run_migrations():
+    with engine.begin() as conn:
+        conn.execute(
+            text(
+                "ALTER TABLE appointments ADD COLUMN IF NOT EXISTS end_time TIMESTAMP"
+            )
+        )
+        conn.execute(
+            text(
+                "ALTER TABLE appointments ADD COLUMN IF NOT EXISTS title VARCHAR"
+            )
+        )
+
+
+run_migrations()
 
 app = FastAPI()
 
